@@ -3,16 +3,19 @@ CFLAGS = -Wall -g -Wextra -Werror
 
 target: exe
 
-exe: main.o lrpc.a
-	$(CC) $(CFLAGS) main.o -o exe -L ./Library/ -lrpc
+exe: main.o person.o libRPC.a
+	$(CC) $(CFLAGS) ./Library/main.o ./Library/person.o -o exe -L ./Library/ -lRPC
 main.o: main.c
-	$(CC) $(CFLAGS) main.c -o main.o
-lrpc.a: Serialized.o 
-	ar rs ./Library/librpc.a Serialized.o
-Serialized.o: Serialized.c
-	$(CC) $(CFLAGS) Serialized.c -o Serialized.o
+	$(CC) $(CFLAGS) -c main.c -o ./Library/main.o
+person.o: ./Source/person.c
+	$(CC) $(CFLAG) -c ./Source/person.c -o ./Library/person.o
+lib: libRPC.a
+libRPC.a: Serialize.o 
+	ar rs ./Library/libRPC.a ./Library/Serialize.o
+Serialize.o: ./Source/Serialize.c
+	$(CC) $(CFLAGS) -c ./Source/Serialize.c -o ./Library/Serialize.o
+
 clean:
-	rm Serialized.o
-	rm ./Library/librpc.a
-	rm main.o
+	rm ./Library/*.o
+	rm ./Library/lib*
 	rm exe

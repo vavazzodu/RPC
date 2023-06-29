@@ -1,6 +1,11 @@
-#include<stdio.h>
+#ifndef __SERIALIZE__
+#define __SERIALIZE__
 
-#define MAX_BUF_SIZE 100
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "sentinel.h"
+#define MAX_BUF_SIZE 1000
 
 typedef struct serialized_buffer {
     char * b;
@@ -8,6 +13,7 @@ typedef struct serialized_buffer {
     int next;
 }ser_buff_t;
 
+    
 /* Supporting APIs for (De)serialization */
 
 /* API for initializing the serialized buffer.
@@ -45,4 +51,10 @@ skip_serialize_data ( ser_buff_t *buff, int skip_size);
  */
 void
 free_serialize_buffer ( ser_buff_t *buff);
+/* API for resetting the serialized buffer.
+ * buff: pointer to the serialized data buffer.
+ */
+void
+reset_serialize_buffer ( ser_buff_t *buff);
 
+#endif
