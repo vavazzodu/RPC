@@ -78,7 +78,7 @@ De_serialize_data ( char *dest, ser_buff_t *buff, int size)
     //that is the reason for resetting the next pointer after 
     //serialization.
     memcpy(dest, buff->b + buff->next, size);
-    return;
+    buff->next = buff->next + size;
 
 }
 void

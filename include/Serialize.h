@@ -55,6 +55,6 @@ free_serialize_buffer ( ser_buff_t *buff);
  * buff: pointer to the serialized data buffer.
  */
 void
-reset_serialize_buffer ( ser_buff_t *buff);
+reset_serialized_buffer ( ser_buff_t *buff);
 
 #endif

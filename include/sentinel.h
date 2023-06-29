@@ -12,13 +12,13 @@
     }                                                                \
 }
 
-#define SENTINEL_DETECTION_CODE(b)                  \
+#define SENTINEL_DETECTION_CODE(buff)                  \
 {                                                   \
     unsigned int sentinel = 0;                      \
-    De_serialize_data((char *)&sentinel, b, sizeof(unsigned int)); \
+    De_serialize_data((char *)&sentinel, buff, sizeof(unsigned int)); \
     if(sentinel == 0xFFFFFFFF)                                     \
         return NULL;                                               \
     else                                                           \
-        skip_serialize_data(b, -1*sizeof(unsigned int));            \
+        skip_serialize_data(buff, -1*sizeof(unsigned int));            \
 }
 #endif

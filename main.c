@@ -35,14 +35,20 @@ int main()
     p1.prev_company[0].CEO = NULL;
 
     p1.manager = NULL;
+    
     /* print the structure before serializing it. */
     printf("Person structure before serializing it\n");
     print_person(&p1);
+    
     /* Serialization begins */
     ser_buff_t *buf;
     buf = calloc(1, sizeof(ser_buff_t));
     Initialize_ser_buf(&buf);
     Serialize_person_t(&p1, buf);
+
+    /* Always reset the buffer after serializing, otherwise
+     * there is catastrophe waiting for you */
+    reset_serialized_buffer(buf);
     
     /*Create a new object which will be filled
       via de-serialize method */
