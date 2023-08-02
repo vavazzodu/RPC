@@ -123,3 +123,13 @@ reset_serialized_buffer ( ser_buff_t *buff )
 {
     buff->next = 0;
 }
+int
+get_buf_size(ser_buff_t *buff)
+{
+    if(buff == NULL)
+        return 0;
+    else
+    {
+        return buff->size;
+    }
+}

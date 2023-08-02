@@ -56,5 +56,8 @@ free_serialize_buffer ( ser_buff_t *buff);
  */
 void
 reset_serialized_buffer ( ser_buff_t *buff);
+/* get the buffer length */
+int
+get_buf_size(ser_buff_t *buff);
 
 #endif
