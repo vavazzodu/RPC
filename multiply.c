@@ -23,9 +23,12 @@ void rpc_send_recv(ser_buff_t *in_buf, ser_buff_t *res_buf)
    unsigned int addrlen = sizeof(addr);
    rc = sendto(sock_fd, in_buf->b, get_buf_size(in_buf), 0, (struct sockaddr *)&addr, addrlen);
    printf("client has send %d bytes to server\n",rc);
+   /* step 4,5,6,7 & 8 will be at server side, so check server.c */
+   /* Following will be the blocking system call untill
+    * the client process receives data from server */
    rc = recvfrom(sock_fd, res_buf->b, get_buf_size(res_buf), 0, (struct sockaddr *)&addr , &addrlen);
-   printf("client has received %d bytes from server\n",rc);
    /* at this moment the res_buf contains the data from server */
+   printf("client has received %d bytes from server\n",rc);
    return;
 }
 int rpc_multiply(int n1, int n2)
@@ -48,7 +51,9 @@ int rpc_multiply(int n1, int n2)
                                            
      * step 3 Send the data over the NW to server */
     rpc_send_recv(client_send_buf, client_receive_buf);
-    /* Deserialize the res buffer and get the result */
+    /* step 9 Deserialize the receive buffer and get the result */
+    /* reset the buffer so that reading start from beginning */
+    reset_serialized_buffer(client_receive_buf);
     De_serialize_data((char *)&result, client_receive_buf, sizeof(int));
     return result;
 }
