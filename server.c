@@ -59,6 +59,9 @@ int main()
    rc = sendto(sock_fd, server_send_buf->b, get_buf_size(server_send_buf), 0,
                (struct sockaddr *)&client_addr, addrlen);
    printf("Server has send %d bytes to client\n",rc);
-
+   free_serialize_buffer(server_receive_buf);
+   free_serialize_buffer(server_send_buf);
+   server_receive_buf = NULL;
+   server_send_buf = NULL;
    return 0;
 }

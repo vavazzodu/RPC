@@ -55,6 +55,10 @@ int rpc_multiply(int n1, int n2)
     /* reset the buffer so that reading start from beginning */
     reset_serialized_buffer(client_receive_buf);
     De_serialize_data((char *)&result, client_receive_buf, sizeof(int));
+    free_serialize_buffer(client_send_buf);
+    free_serialize_buffer(client_receive_buf);
+    client_send_buf = NULL;
+    client_receive_buf = NULL;
     return result;
 }
 
