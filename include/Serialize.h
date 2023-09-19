@@ -7,13 +7,22 @@
 #include "sentinel.h"
 #define MAX_BUF_SIZE 1000
 
+#define MULTIPLY 0
+#define ADDITION 1
+#define SUBSTRACTION 2
+
 typedef struct serialized_buffer {
     char * b;
     int size;
     int next;
 }ser_buff_t;
 
-    
+/* RPC Identity header */
+typedef struct IdentityHdr {
+    int OpId;
+    int PayloadSize;
+}IdentityHdr_t;
+
 /* Supporting APIs for (De)serialization */
 
 /* API for initializing the serialized buffer.
@@ -59,5 +68,14 @@ reset_serialized_buffer ( ser_buff_t *buff);
 /* get the buffer length */
 int
 get_buf_size(ser_buff_t *buff);
-
+/* Copy data after the offset in serialized buffer */
+void
+copy_in_serialized_buffer_by_offset( ser_buff_t *buff, char *value, int size, int offset);
+/* skip serialized buffer */
+void
+skip_serialized_buffer( ser_buff_t *buff, int size);
+/* Get the size of filled buffer */
+int  
+get_serialize_buffer_data_size(ser_buff_t *b);
 #endif
+

@@ -10,18 +10,41 @@ multiply(int n1, int n2)
     return n1*n2;
 }
 int
+addition(int n1, int n2)
+{
+    return n1+n2;
+}
+int
 Unmarshal_received_data(ser_buff_t *received_buf)
 {
     int num1, num2;
+    IdentityHdr_t hdr;
     /* Buffer has to be reset first so that the
      * deserializing starts from beginning */
     reset_serialized_buffer(received_buf);
+    /* Get the header data */
+    De_serialize_data ( (char *)&hdr.OpId, received_buf, sizeof(int));
+    De_serialize_data ( (char *)&hdr.PayloadSize, received_buf, sizeof(int));
     /* step 5 Deserialize the data and store it in local variable */
     De_serialize_data ( (char *)&num1, received_buf, sizeof(int));
     De_serialize_data ( (char *)&num2, received_buf, sizeof(int));
     printf("Received num1 = %d and num2 = %d from client\n",num1,num2);
     /* step 6 Invoke actual RPC at server */
-    return multiply(num1,num2); 
+    if(hdr.OpId == MULTIPLY)
+    {
+        printf("Operation: Multiplication\n");
+        return multiply(num1,num2);
+    }
+    else if(hdr.OpId == ADDITION)
+    {
+        printf("Operation: Addition\n");
+        return addition(num1,num2);
+    }
+    else
+    {
+        printf("Invalid operation %d\n",hdr.OpId);
+        return 0;
+    }
 }
 int main()
 {
@@ -45,6 +68,7 @@ int main()
    }
    ser_buff_t *server_receive_buf,
               *server_send_buf;
+   /* Initialize the buffers */
    Initialize_ser_buf(&server_receive_buf);
    Initialize_ser_buf(&server_send_buf);
    /* step 4 server process received the serialized data from client */

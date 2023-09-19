@@ -36,9 +36,18 @@ int rpc_multiply(int n1, int n2)
     /* initialize the serial buffers */
     ser_buff_t *client_send_buf, 
                *client_receive_buf;
+    IdentityHdr_t hdr;
     int result;
+    /* Fill the header */
+    hdr.OpId = ADDITION;
+    hdr.PayloadSize = 0; //We dont know yet
+
+    /* Initialize the buffers */
     Initialize_ser_buf(&client_send_buf);
     Initialize_ser_buf(&client_receive_buf);
+    
+    /* Reserve the header space in buffer */
+    skip_serialized_buffer(client_send_buf, sizeof(hdr));
     /* step 2, Fill the buffer with data */
     Serialize_data(client_send_buf, (char *)&n1, sizeof(int));
     Serialize_data(client_send_buf, (char *)&n2, sizeof(int));
@@ -47,9 +56,15 @@ int rpc_multiply(int n1, int n2)
         *           |           *
         *    n1     |    n2     *
         *           |           *
-        -------------------------
+        -------------------------          */
                                            
-     * step 3 Send the data over the NW to server */
+    /* Now that we know the payload size */
+    hdr.PayloadSize = get_serialize_buffer_data_size(client_send_buf) - sizeof(hdr);
+    /* Now copy the header into serialized buffer but at the beginning */
+    copy_in_serialized_buffer_by_offset(client_send_buf, (char *)&hdr.OpId, sizeof(hdr.OpId), 0); 
+    copy_in_serialized_buffer_by_offset(client_send_buf, (char *)&hdr.PayloadSize, 
+                                           sizeof(hdr.PayloadSize), sizeof(hdr.OpId));
+    /* step 3 Send the data over the NW to server */
     rpc_send_recv(client_send_buf, client_receive_buf);
     /* step 9 Deserialize the receive buffer and get the result */
     /* reset the buffer so that reading start from beginning */

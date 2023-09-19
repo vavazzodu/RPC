@@ -133,3 +133,45 @@ get_buf_size(ser_buff_t *buff)
         return buff->size;
     }
 }
+/*
+ *       |<-----------size---------------->|
+ *        ---------------------------------
+ *       |            |                    |
+ *       |            |                    |
+ *        ---------------------------------
+ *       b            next
+*/ 
+void
+copy_in_serialized_buffer_by_offset( ser_buff_t *buff, char *value, int size, int offset)
+{
+    // If buffer size is less than offset
+    if(buff->size < offset)
+    {
+        printf("Error: Attempt to write outside buffer boundries\n");
+        return;
+    }
+    memcpy(buff->b + offset, value, size); 
+}
+void
+skip_serialized_buffer( ser_buff_t *buff, int size)
+{
+    int lv_availableSize;
+    lv_availableSize = buff->size - buff->next;
+    if(lv_availableSize >= size)
+    {
+        buff->next = buff->next + size;
+        return;
+    }
+    while(lv_availableSize < size)
+    {
+        buff->size = buff->size*2;
+        lv_availableSize = buff->size - buff->next;
+    }
+    buff->b = realloc(buff->b, buff->size);
+    buff->next = buff->next + size;
+    return;
+}
+int  
+get_serialize_buffer_data_size(ser_buff_t *b){
+        return b->next;
+}
